@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
+import userRoutes from "./routes/user.routes.js";
+
 const app = express();
 
 app.use(cors());
@@ -15,5 +17,8 @@ const welcomeText =
 app.get("/", (req, res) => {
   res.send(welcomeText);
 });
+
+// User routes
+app.use("/api/user", userRoutes);
 
 export default app;
