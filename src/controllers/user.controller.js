@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-// import jwt from "jsonwebtoken";
+import { createAccessToken } from "../libs/jwt.js";
 import bcrypt from "bcryptjs";
 import Database from "../config/database.js";
 
@@ -31,15 +31,15 @@ export const register = async (req, res) => {
     const userSaved = await newUser.save();
 
     // create access token
-    /* const token = await createAccessToken({
+    const token = await createAccessToken({
       id: userSaved._id,
     });
 
     res.cookie("token", token, {
-      httpOnly: process.env.NODE_ENV !== "development",
-      secure: true,
-      sameSite: "none",
-    }); */
+      httpOnly: true,
+      secure: false, // for https = true. for dev environment set it to false
+      //   sameSite: "none",
+    });
 
     await database.disconnect();
 

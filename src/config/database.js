@@ -8,6 +8,7 @@ class Database {
 
   async connect() {
     //if there is a connection use it, do not create a new connection
+    // console.log("database constructor", this.connection);
     if (this.connection) return this.connection;
 
     return mongoose
@@ -26,6 +27,7 @@ class Database {
       .disconnect()
       .then(() => {
         console.log("Database disconnected");
+        this.connection = null; // after disconection the constructur is cleared. Then when connect method is called, mongoose.connect will be excecuted
       })
       .catch((error) => {
         console.log(error);
