@@ -52,3 +52,73 @@ export const register = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const database = new Database();
+    await database.connect();
+    const users = await User.find();
+    await database.disconnect();
+    if (users.length) return res.json(users);
+    return res.status(204);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+export const find = async (req, res, next) => {
+  try {
+    const database = new Database();
+    await database.connect();
+    const { key, value } = req.params;
+    const query = {};
+    query[key] = value; // name = Arroz ...
+    const items = await User.find(query);
+    await database.disconnect();
+    if (!items.length)
+      return res.status(209).send(`${key} = ${value} - not found`);
+    req.body.items = items; // injeccion de dependencias> dependency injection
+    next();
+  } catch (error) {
+    const { key, value } = req.params;
+    res
+      .status(500)
+      .json({ ...error, customErrorMessage: `not found, ${key} = ${value} ` });
+  }
+};
+
+export const getOne = (req, res) => {
+  try {
+    // console.log(req.body.items);
+    res.json(req.body.items[0]);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+export const update = async (req, res) => {
+  try {
+    const database = new Database();
+    await database.connect();
+    let item = req.body.items[0];
+    item = Object.assign(item, req.body); // {...item, ...req.body}
+    const newItem = await item.save();
+    await database.disconnect();
+    res.json(newItem);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+export const deleteOne = async (req, res) => {
+  try {
+    const database = new Database();
+    await database.connect();
+    let item = req.body.items[0];
+    const deleted = await item.deleteOne();
+    await database.disconnect();
+    res.json(deleted);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
