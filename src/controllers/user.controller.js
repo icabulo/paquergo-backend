@@ -77,6 +77,9 @@ export const find = async (req, res, next) => {
     await database.disconnect();
     if (!items.length)
       return res.status(209).send(`${key} = ${value} - not found`);
+    // found items can only be accessed from an authenticated user
+    if (items[0]._id.toString() !== req.tokenId)
+      return res.status(403).send(`Access denied - user scope rights`);
     req.body.items = items; // injeccion de dependencias> dependency injection
     next();
   } catch (error) {
