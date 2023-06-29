@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { auth } from "../middlewares/auth.middleware.js";
 import {
   register,
   getAllUsers,
@@ -13,9 +14,9 @@ import {
 const router = Router();
 
 router.post("/register", register);
-router.get("/getusers", getAllUsers);
-router.get("/:key/:value", find, getOne);
-router.delete("/:key/:value", find, deleteOne);
-router.put("/:key/:value", find, update);
+router.get("/getusers", auth, getAllUsers);
+router.get("/:key/:value", auth, find, getOne);
+router.delete("/:key/:value", auth, find, deleteOne);
+router.put("/:key/:value", auth, find, update);
 
 export default router;
