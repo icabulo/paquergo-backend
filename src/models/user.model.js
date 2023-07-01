@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema(
       enum: ["not selected", "amigo", "paquerx"],
       default: "not selected",
     },
+    mapLocation: Array,
   },
   {
     timestamps: true,
