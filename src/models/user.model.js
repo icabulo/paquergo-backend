@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 //user image: userImageUrl
 //waste list: myWasteList
 //paca list: myPacaList
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
   {
     username: {
       type: String,
@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema(
       default: "not selected",
     },
     mapLocation: Array,
+    userImage: String,
   },
   {
     timestamps: true,
