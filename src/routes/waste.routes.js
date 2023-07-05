@@ -16,9 +16,5 @@ router.get("/complete-list", auth, getAllWaste);
 router.get("/:key/:value", auth, find, getListOneUser);
 router.delete("/:key/:value", auth, find, deleteOne);
 router.put("/:key/:value", auth, find, update);
-// router.get("/complete-list", auth, getAllWaste);
-// router.get("/:key/:value", auth, find, getOne);
-// router.delete("/:key/:value", auth, find, deleteOne);
-// router.put("/:key/:value", auth, find, update);
 
 export default router;
