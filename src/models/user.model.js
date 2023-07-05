@@ -25,6 +25,10 @@ const userSchema = new Schema(
     },
     mapLocation: Array,
     userImage: String,
+    chat: {
+      contacts: Array,
+      conversations: Array,
+    },
   },
   {
     timestamps: true,

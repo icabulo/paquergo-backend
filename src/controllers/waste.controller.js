@@ -10,7 +10,7 @@ export const createWaste = async (req, res) => {
     await database.connect();
 
     // validating user rights. e.g., a user tries to create a wasta alert for a different userId.
-    console.log("user validation", req.body.user, req.tokenId, req.body);
+    // console.log("user validation", req.body.user, req.tokenId, req.body);
     if (req.body.user !== req.tokenId)
       return res.status(403).send(`Access denied - user scope rights`);
 
