@@ -1,20 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 
-const wasteSchema = new Schema(
+const pacaSchema = new Schema(
   {
     location: Array,
     date: {
       type: Date,
       default: Date.now(),
     },
-    description: {
+    pacaState: {
       type: String,
-      required: true,
-    },
-    deliveryState: {
-      type: String,
-      enum: ["pendiente", "asignado", "entregado"],
-      default: "pendiente",
+      enum: ["nuevo", "finalizado", "modificado"],
+      default: "nuevo",
     },
     user: {
       type: Schema.Types.ObjectId,
@@ -27,5 +23,5 @@ const wasteSchema = new Schema(
   }
 );
 
-const Waste = mongoose.model("Waste", wasteSchema);
-export default Waste;
+const Paca = mongoose.model("Paca", pacaSchema);
+export default Paca;

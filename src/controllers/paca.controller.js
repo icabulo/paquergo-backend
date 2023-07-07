@@ -1,8 +1,9 @@
+// NOTE: SOME CONTROLLERS ARE THE SAME AS IN THE WASTE.CONTROLLES. LATER IT WILL BE NICE TO RE-USE THEM
 // import User from "../models/user.model.js";
-import Waste from "../models/waste.model.js";
+import Paca from "../models/paca.model.js";
 import Database from "../config/database.js";
 
-export const createWaste = async (req, res) => {
+export const createPaca = async (req, res) => {
   try {
     const database = new Database();
     await database.connect();
@@ -13,29 +14,29 @@ export const createWaste = async (req, res) => {
       return res.status(403).send(`Access denied - user scope rights`);
 
     // creating the user
-    const newUser = new Waste(req.body);
+    const newUser = new Paca(req.body);
 
     // saving the user in the database
-    const wasteSaved = await newUser.save();
+    const pacaSaved = await newUser.save();
 
     await database.disconnect();
 
-    res.json(wasteSaved);
+    res.json(pacaSaved);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const getAllWaste = async (req, res) => {
+export const getAllPaca = async (req, res) => {
   try {
     const database = new Database();
     await database.connect();
-    const wastes = await Waste.find().populate({
+    const pacas = await Paca.find().populate({
       path: "user",
       select: ["username", "currentRole", "mapLocation"],
     });
     await database.disconnect();
-    if (wastes.length) return res.json(wastes);
+    if (pacas.length) return res.json(pacas);
     return res.status(204);
   } catch (error) {
     res.status(500).json(error);
@@ -50,8 +51,8 @@ export const find = async (req, res, next) => {
     const query = {};
     query[key] = value;
     // console.log("query", query);
-    // let items = await Waste.find(query);
-    let items = await Waste.find(query).populate({
+    // let items = await Paca.find(query);
+    let items = await Paca.find(query).populate({
       path: "user",
       select: ["username", "currentRole", "mapLocation"],
     });
