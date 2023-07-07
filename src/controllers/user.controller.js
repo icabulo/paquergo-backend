@@ -38,7 +38,7 @@ export const register = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: false, // for https = true. for dev environment set it to false
-      //   sameSite: "none",
+      sameSite: "none",
     });
 
     await database.disconnect();
