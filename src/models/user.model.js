@@ -8,6 +8,10 @@ const userSchema = new Schema(
     username: {
       type: String,
       trim: true,
+      default: function () {
+        const myName = this.email.split("@")[0];
+        return myName;
+      },
     },
     email: {
       type: String,
