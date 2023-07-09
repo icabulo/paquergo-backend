@@ -1,7 +1,5 @@
-import User from "../models/user.model.js";
+// import User from "../models/user.model.js";
 import Waste from "../models/waste.model.js";
-// import { createAccessToken } from "../libs/jwt.js";
-// import bcrypt from "bcryptjs";
 import Database from "../config/database.js";
 
 export const createWaste = async (req, res) => {

@@ -1,65 +1,42 @@
-import User from "../models/user.model.js";
-import { createAccessToken } from "../libs/jwt.js";
-import bcrypt from "bcryptjs";
+// NOTE: SOME CONTROLLERS ARE THE SAME AS IN THE WASTE.CONTROLLES. LATER IT WILL BE NICE TO RE-USE THEM
+// import User from "../models/user.model.js";
+import Paca from "../models/paca.model.js";
 import Database from "../config/database.js";
 
-export const register = async (req, res) => {
+export const createPaca = async (req, res) => {
   try {
     const database = new Database();
     await database.connect();
 
-    const { username, email, password } = req.body;
-
-    const userFound = await User.findOne({ email });
-
-    if (userFound)
-      return res.status(400).json({
-        message: ["The email is already in use"],
-      });
-
-    // hashing the password
-    const passwordHash = await bcrypt.hash(password, 10);
+    // validating user rights. e.g., a user tries to create a wasta alert for a different userId.
+    // console.log("user validation", req.body.user, req.tokenId, req.body);
+    if (req.body.user !== req.tokenId)
+      return res.status(403).send(`Access denied - user scope rights`);
 
     // creating the user
-    const newUser = new User({
-      username,
-      email,
-      password: passwordHash,
-    });
+    const newUser = new Paca(req.body);
 
     // saving the user in the database
-    const userSaved = await newUser.save();
-
-    // create access token
-    const token = await createAccessToken({
-      id: userSaved._id,
-    });
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false, // for https = true. for dev environment set it to false
-      // sameSite: "none",
-    });
+    const pacaSaved = await newUser.save();
 
     await database.disconnect();
 
-    res.json({
-      id: userSaved._id,
-      username: userSaved.username,
-      email: userSaved.email,
-    });
+    res.json(pacaSaved);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const getAllUsers = async (req, res) => {
+export const getAllPaca = async (req, res) => {
   try {
     const database = new Database();
     await database.connect();
-    const users = await User.find();
+    const pacas = await Paca.find().populate({
+      path: "user",
+      select: ["username", "currentRole", "mapLocation"],
+    });
     await database.disconnect();
-    if (users.length) return res.json(users);
+    if (pacas.length) return res.json(pacas);
     return res.status(204);
   } catch (error) {
     res.status(500).json(error);
@@ -73,13 +50,22 @@ export const find = async (req, res, next) => {
     const { key, value } = req.params;
     const query = {};
     query[key] = value;
-    const items = await User.find(query);
+    // console.log("query", query);
+    // let items = await Paca.find(query);
+    let items = await Paca.find(query).populate({
+      path: "user",
+      select: ["username", "currentRole", "mapLocation"],
+    });
+    // console.log("result", items, items.length);
     await database.disconnect();
     if (!items.length)
       return res.status(209).send(`${key} = ${value} - not found`);
-    // found items can only be accessed from an authenticated user
-    if (items[0]._id.toString() !== req.tokenId)
+    // as the query can returns documents for different users then
+    // found items can only be accessed from an authenticated user (auth middleware)
+    if (items[0].user._id.toString() !== req.tokenId)
+      // beware user is an object when .pupulate() method is used
       return res.status(403).send(`Access denied - user scope rights`);
+
     req.body.items = items; // injeccion de dependencias> dependency injection
     next();
   } catch (error) {
@@ -90,10 +76,10 @@ export const find = async (req, res, next) => {
   }
 };
 
-export const getOne = (req, res) => {
+export const getListOneUser = (req, res) => {
   try {
     // console.log(req.body.items);
-    res.json(req.body.items[0]);
+    res.json(req.body.items);
   } catch (error) {
     res.status(500).json(error);
   }

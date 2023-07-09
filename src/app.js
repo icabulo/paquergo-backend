@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 
 import userRoutes from "./routes/user.routes.js";
 import wasteRoutes from "./routes/waste.routes.js";
+import pacaRoutes from "./routes/paca.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
@@ -30,6 +31,9 @@ app.use("/api/user", userRoutes);
 
 // Waste routes
 app.use("/api/waste", wasteRoutes);
+
+// Waste routes
+app.use("/api/paca", pacaRoutes);
 
 // Auth routes
 app.use("/api/auth", authRoutes);
